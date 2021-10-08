@@ -107,16 +107,54 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
     return positions;
 }
 
+void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
+    // Se crea la tabla para guardar los valores (Como lo veíamos en clase)
+    int LongestCommonSuffix[lenA + 1][lenB + 1];
+
+    // Longitud del substring más largo
+    int lenLongestSubstring=0;
+    // Fila de la tabla
+    int tableRow;
+    // Columna de la tabla
+    int tableCol;
+
+    // Con estos for se construye la tabla (Estoy ocupando programacion dinamica, vayan al algoritmo del profe)
+    for (int i = 0; i <= lenA; i++){
+        for (int j = 0; j <= lenB; j++){
+            if ((i == 0 )|| (j == 0))
+                LongestCommonSuffix[i][j] = 0;
+            else if (a[i - 1] == b[j - 1]) {
+                LongestCommonSuffix[i][j] = LongestCommonSuffix[i - 1][j - 1] + 1;
+                // Aqui en este caso no necesitamos el maximo si no la longitud del Longest Common Substring
+                if (lenLongestSubstring < LongestCommonSuffix[i][j]) {
+                    // Se guardan los valores de la fila y la columna asi como la longitud
+                    lenLongestSubstring = LongestCommonSuffix[i][j];
+                    tableCol = j;
+                    tableRow = i;
+                }
+            }
+            else
+                LongestCommonSuffix[i][j] = 0;
+        }
+    }
+
+    // Aqui se imprimen las posiciones porfa chequen todos los casos que se les ocurran segun yo ya quedo.
+    cout << tableRow -lenLongestSubstring <<"\n";
+    cout << tableCol -1 << "\n";
+    
+}
+
 int main() {
 
     bool foundPattern = false;
     bool fileFinish = true;
-    string tFile1Content, tFile2Content, mcodeFileContent;
+    string tFileContent, tFile1Content, tFile2Content, mcodeFileContent;
     vector<string> fileContent(3);
     vector<int>kmpArray;
     vector<int>positions;
 
-    tFile1Content = readWholeFile("transmission1.txt");
+    tFileContent = readWholeFile("transmission1.txt");
+    tFile1Content = tFileContent;
     tFile2Content = readWholeFile("transmission2.txt");
 
     fileContent[0] = readWholeFile("mcodeFile1.txt");
@@ -125,7 +163,7 @@ int main() {
 
     for (int i = 0; i < 3; i++) {
         kmpArray = preKMPAlgorithm(fileContent[i], fileContent[i].size());
-        positions = kmpSearching(tFile1Content, fileContent[i], kmpArray, foundPattern);
+        positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
         if (foundPattern) {
             cout << "True" << " ";
             for (int i = 0; i < positions.size(); i++) {
@@ -138,10 +176,11 @@ int main() {
             cout << "False" << "\n";
         }
         if (i == 2 && fileFinish) {
-            tFile1Content = tFile2Content;
+            tFileContent = tFile2Content;
             i = -1;
             fileFinish = false;
         }
     }
+    LongestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
     return 0;
 }
