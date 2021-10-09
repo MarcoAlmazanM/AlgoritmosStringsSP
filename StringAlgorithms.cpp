@@ -177,16 +177,14 @@ void findLongestPalindromicString(string text){
 	
 	//Uncomment it to print LPS Length array
 	//printf("%d %d ", L[0], L[1]);
-	for (i = 2; i < N; i++)
-	{
+	for (i = 2; i < N; i++){
 		//get currentLeftPosition iMirror for currentRightPosition i
 		iMirror = 2*C-i;
 		//Reset expand - means no expansion required
 		expand = 0;
 		diff = R - i;
 		//If currentRightPosition i is within centerRightPosition R
-		if(diff >= 0)
-		{
+		if(diff >= 0){
 			if(L[iMirror] < diff) // Case 1
 				L[i] = L[iMirror];
 			else if(L[iMirror] == diff && R == N-1) // Case 2
