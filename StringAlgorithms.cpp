@@ -107,46 +107,49 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
     return positions;
 }
 
-void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
-    // Se crea la tabla para guardar los valores (Como lo veíamos en clase)
-    // Pasar arreglo a vector para permitir asignación constante.
-    vector < vector <int> > rows(lenA+1);
+/*
+ La funcion LongestCommonSubstring se encarga de encontrar las posiciones donde se encuentra 
+ el substring más largo en común entre dos strings.
+ Esta función recibe 4 parámetros de tipo (string , string , int, int ).
+ 
+*/
+void longestCommonSubstring(string a, string b, int lenA, int lenB) {
+    // Se crea la matriz de valores que permitirá guardar los valores del Longest Substring.
+    vector < vector <int> > table(lenA+1);
     vector <int> cols(lenB+1);
-
 
     // Longitud del substring más largo
     int lenLongestSubstring=0;
-    // Fila de la tabla
-    int tableRow = 0;
-    // Columna de la tabla
-    int tableCol = 0;
+    // Indice Final del substring
+    int endIndex = 0;
+    
 
-    // Con estos for se construye la tabla (Estoy ocupando programacion dinamica, vayan al algoritmo del profe)
+    // Ciclo donde se contruye la tabla de valores que tendra el Longest Common Substring.
     for (int i = 0; i <= lenA; i++){
         for (int j = 0; j <= lenB; j++){
             if ((i == 0 )|| (j == 0)) {
-                rows[i] = cols;
-                rows[i][j] = 0;
+                table[i] = cols;
+                table[i][j] = 0;
             }
             else if (a[i - 1] == b[j - 1]) {
-                rows[i][j] = rows[i - 1][j - 1] + 1;
-                // Aqui en este caso no necesitamos el maximo si no la longitud del Longest Common Substring
-                if (lenLongestSubstring < rows[i][j]) {
-                    // Se guardan los valores de la fila y la columna asi como la longitud
-                    lenLongestSubstring = rows[i][j];
-                    tableCol = j;
-                    tableRow = i;
+                table[i][j] = table[i - 1][j - 1] + 1;
+                /*Si la longitud del substring más grande encontrado hasta ahorita es menor que el valor actual en la tabla
+                guardar tanto la longitud como el indice final de substring*/
+                if (lenLongestSubstring < table[i][j]) {
+                    
+                    lenLongestSubstring = table[i][j];
+                    endIndex = i;
                 }
             }
             else{
-                rows[i][j] = 0;
+                table[i][j] = 0;
             }
         }
     }
 
-    // Aqui se imprimen las posiciones porfa chequen todos los casos que se les ocurran segun yo ya quedo.
-    cout << tableRow -lenLongestSubstring << ' ';
-    cout << tableCol -1 << "\n";
+    // Se imprime la posicion donde inicia el Longest Common Substring asi como donde finaliza.
+    cout << endIndex -lenLongestSubstring << ' ';
+    cout << endIndex -1 << "\n";
 }
 
 string aumenta(string S){
@@ -278,6 +281,6 @@ int main() {
 
     cout << palindrome2.first << ' ' << palindrome2.second << "\n";
 
-    LongestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
+    longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
     return 0;
 }
