@@ -110,7 +110,9 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
 void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
     // Se crea la tabla para guardar los valores (Como lo veíamos en clase)
     // Pasar arreglo a vector para permitir asignación constante.
-    int LongestCommonSuffix[lenA + 1][lenB + 1];
+    vector < vector <int> > rows(lenA+1);
+    vector <int> cols(lenB+1);
+
 
     // Longitud del substring más largo
     int lenLongestSubstring=0;
@@ -122,25 +124,27 @@ void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
     // Con estos for se construye la tabla (Estoy ocupando programacion dinamica, vayan al algoritmo del profe)
     for (int i = 0; i <= lenA; i++){
         for (int j = 0; j <= lenB; j++){
-            if ((i == 0 )|| (j == 0))
-                LongestCommonSuffix[i][j] = 0;
+            if ((i == 0 )|| (j == 0)) {
+                rows[i] = cols;
+                rows[i][j] = 0;
+            }
             else if (a[i - 1] == b[j - 1]) {
-                LongestCommonSuffix[i][j] = LongestCommonSuffix[i - 1][j - 1] + 1;
+                rows[i][j] = rows[i - 1][j - 1] + 1;
                 // Aqui en este caso no necesitamos el maximo si no la longitud del Longest Common Substring
-                if (lenLongestSubstring < LongestCommonSuffix[i][j]) {
+                if (lenLongestSubstring < rows[i][j]) {
                     // Se guardan los valores de la fila y la columna asi como la longitud
-                    lenLongestSubstring = LongestCommonSuffix[i][j];
+                    lenLongestSubstring = rows[i][j];
                     tableCol = j;
                     tableRow = i;
                 }
             }
             else
-                LongestCommonSuffix[i][j] = 0;
+                rows[i][j] = 0;
         }
     }
 
     // Aqui se imprimen las posiciones porfa chequen todos los casos que se les ocurran segun yo ya quedo.
-    cout << tableRow -lenLongestSubstring <<"\n";
+    cout << tableRow -lenLongestSubstring << ' ';
     cout << tableCol -1 << "\n";
 
 }
@@ -165,7 +169,7 @@ pair<int,int> manacher(string S){
 
     // longitud y centro del máximo palíndromo encontrado
     int maxLong=1, maxCentro=1; // Hasta ahora posición 1
-    int L[N];
+    vector <int> L(N);
     int C = 1;
     int Li = 0, Ri = 0;
     bool expansion = false; // true si requiera expansión
@@ -248,7 +252,7 @@ int main() {
         kmpArray = preKMPAlgorithm(fileContent[i], fileContent[i].size());
         positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
         if (foundPattern) {
-            cout << "True" << " ";
+            cout << "true" << " ";
             for (unsigned int i = 0; i < positions.size(); i++) {
                 cout << positions[i] << " ";
             }
@@ -256,7 +260,7 @@ int main() {
             foundPattern = false;
         }
         else {
-            cout << "False" << "\n";
+            cout << "false" << "\n";
         }
         if (i == 2 && fileFinish) {
             tFileContent = tFile2Content;
