@@ -24,7 +24,7 @@ string readWholeFile(string fileName) {
 /*
  La funcion preKMPAlgorithm se encarga del preprocesamiento del patron para poder generar un arreglo de valores,
  que nos ayudara a poder realizar la busqueda del patron de manera mas sencilla dentro del string principal.
- Esta funciÛn recibe 2 par·metros de tipo (string y entero ).
+ Esta funci√≥n recibe 2 par√°metros de tipo (string y entero ).
  El string es el patron que ingreso el usuario.
  El entero es la longitud de dicho patron.
  Complejidad O(m) donde m es la longitud del patron.
@@ -64,7 +64,7 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 
 /*
  La funcion kmpSearching se encarga de buscar el patron dentro del string principal con ayuda del vector que obtuvimos en el preprocesamiento.
- Esta funciÛn recibe 3 par·metros de tipo (string , string y vector ).
+ Esta funci√≥n recibe 3 par√°metros de tipo (string , string y vector ).
  El primer string es el genoma (string principal) que ingreso el usuario.
  El segundo string es el patron que ingreso el usuario.
  El vector es el que se obtuvo al realizar el preprocesamiento del patron.
@@ -108,18 +108,18 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
 }
 
 void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
-    // Se crea la tabla para guardar los valores (Como lo veÌamos en clase)
-    // Pasar arreglo a vector para permitir asignaciÛn constante.
+    // Se crea la tabla para guardar los valores (Como lo ve√≠amos en clase)
+    // Pasar arreglo a vector para permitir asignaci√≥n constante.
     vector < vector <int> > rows(lenA+1);
     vector <int> cols(lenB+1);
 
 
-    // Longitud del substring m·s largo
+    // Longitud del substring m√°s largo
     int lenLongestSubstring=0;
     // Fila de la tabla
-    int tableRow;
+    int tableRow = 0;
     // Columna de la tabla
-    int tableCol;
+    int tableCol = 0;
 
     // Con estos for se construye la tabla (Estoy ocupando programacion dinamica, vayan al algoritmo del profe)
     for (int i = 0; i <= lenA; i++){
@@ -146,7 +146,6 @@ void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
     // Aqui se imprimen las posiciones porfa chequen todos los casos que se les ocurran segun yo ya quedo.
     cout << tableRow -lenLongestSubstring << ' ';
     cout << tableCol -1 << "\n";
-
 }
 
 string aumenta(string S){
@@ -164,15 +163,15 @@ pair<int,int> manacher(string S){
     if (S.length() == 0) // S es nulo
         return res;
 
-    string T = aumenta(S);  // llamar a funciÛn
+    string T = aumenta(S);  // llamar a funci√≥n
     int N = T.length();
 
-    // longitud y centro del m·ximo palÌndromo encontrado
-    int maxLong=1, maxCentro=1; // Hasta ahora posiciÛn 1
+    // longitud y centro del m√°ximo pal√≠ndromo encontrado
+    int maxLong=1, maxCentro=1; // Hasta ahora posici√≥n 1
     vector <int> L(N);
     int C = 1;
     int Li = 0, Ri = 0;
-    bool expansion = false; // true si requiera expansiÛn
+    bool expansion = false; // true si requiera expansi√≥n
 
     L[0]=0; L[1]=1;
 
@@ -193,39 +192,39 @@ pair<int,int> manacher(string S){
             else if(L[Li] == (C+L[C])-Ri && (C+L[C]) < N-1){ // Caso 3
 
                     L[Ri] = L[Li];
-                    expansion = true; // requiere expansiÛn
+                    expansion = true; // requiere expansi√≥n
             }
 
             else if(L[Li] > (C+L[C])-Ri){ // Case 4
                 L[Ri] = (C+L[C])-Ri;
-                expansion = true; // requiere expansiÛn
+                expansion = true; // requiere expansi√≥n
 
             }
     }
     else{
 
         L[Ri] = 0;
-        expansion = true;  // requiere expansiÛn
+        expansion = true;  // requiere expansi√≥n
 
         }
-        if (expansion) // hacer la expansiÛn hasta donde se pueda
+        if (expansion) // hacer la expansi√≥n hasta donde se pueda
 
           while ((Ri + L[Ri]) < N && (Ri - L[Ri]) > 0 && T[Ri+L[Ri]+1] == T[Ri-L[Ri]-1])
             L[Ri]++;
         if (Ri + L[Ri] > (C + L[C]))
-          // si el nuevo palÌndromo se expande m·s all· de C
+          // si el nuevo pal√≠ndromo se expande m√°s all√° de C
             C = Ri;
         if(L[Ri] > maxLong) {
-          // Guardar longitud y centro del palÌndromo m·s grande,
+          // Guardar longitud y centro del pal√≠ndromo m√°s grande,
           // hasta ahora
             maxLong = L[Ri];
             maxCentro = Ri;
         }
     }
-    // obtener inicio y longitud del m·ximo palÌndromo encontrado
+    // obtener inicio y longitud del m√°ximo pal√≠ndromo encontrado
     // recordando que la longitud de T es el doble de la de S
     res.first = (maxCentro - maxLong)/2; // inicio en S
-    res.second = maxLong; // longitud en S
+    res.second = res.first + maxLong - 1 ; // fin de S
     return res;
 }
 
@@ -272,7 +271,7 @@ int main() {
     palindrome1 = manacher(tFile1Content);
     palindrome2 = manacher(tFile2Content);
 
-    cout << palindrome1.first << ' ' << palindrome1.second << "\n";
+    cout << palindrome1.first << ' ' << palindrome1.second<< "\n";
 
     cout << palindrome2.first << ' ' << palindrome2.second << "\n";
 
