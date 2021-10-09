@@ -248,17 +248,36 @@ pair<int,int> manacher(string S){
     return res;
 }
 
+/*
+En el main se declaran e inicializan las variables que se van a utilizar 
+para el funcionamiento y control del programa.
+*/
 int main() {
-
+    /*
+    Se establecen 2 booleanos cuyo proposito es de variable de control del
+    flujo del programa para las condiciones que se encuentran dentro del ciclo
+    */
     bool foundPattern = false;
     bool fileFinish = true;
+    /*
+    Se establecen elementos de tipo pair para procesar y almacenar las posiciones iniciales y finales
+    respecto al punto de los palindromos
+    */
     pair <int, int> palindrome1;
     pair <int, int> palindrome2;
+
+    /*
+    Se indican las variables donde se almacena y ordena el contenido de los archivos
+    */
     string tFileContent, tFile1Content, tFile2Content, mcodeFileContent;
     vector<string> fileContent(3);
     vector<int>kmpArray;
     vector<int>positions;
-
+    /*
+    En esta seccion se carga el contenido de los archivos en las variables declaradas
+    anteriormente, del mismo modo, se ordenan para facilitar su uso dentro del ciclo
+    del programa.
+    */
     tFileContent = readWholeFile("transmission1.txt");
     tFile1Content = tFileContent;
     tFile2Content = readWholeFile("transmission2.txt");
@@ -267,6 +286,11 @@ int main() {
     fileContent[1] = readWholeFile("mcodeFile2.txt");
     fileContent[2] = readWholeFile("mcodeFile3.txt");
 
+    /*
+    Esta seccion es el proceso de ejecucion del programa, en esta primera parte se hace un ciclo
+    que itera un numero de veces proporcional al vector fileContent, cada iteracion ejecuta prepKMPAlgorithm
+    y kmpSearching para la resolucion de la primera parte de la actividad
+    */
     for (int i = 0; i < 3; i++) {
         kmpArray = preKMPAlgorithm(fileContent[i], fileContent[i].size());
         positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
@@ -287,14 +311,23 @@ int main() {
             fileFinish = false;
         }
     }
-
+    /*
+    Este segmento corresponde a la parte 2 de la actividad, donde se utiliza una implementacion
+    del algoritmo de manacher para la búsqueda del palíndromo, así como de su posición inicial
+    y final.
+    */
     palindrome1 = manacher(tFile1Content);
     palindrome2 = manacher(tFile2Content);
-
+    
     cout << palindrome1.first << ' ' << palindrome1.second<< "\n";
 
     cout << palindrome2.first << ' ' << palindrome2.second << "\n";
 
+    /*
+    Este segmento corresponde a la parte 3 de la actividad, donde se obtiene la posición inicial
+    y final del substring común más largo en la transmisión de archivos, se requiere de los contenidos
+    del archivo, así como su respectivo tamaño
+    */
     longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
     return 0;
 }
