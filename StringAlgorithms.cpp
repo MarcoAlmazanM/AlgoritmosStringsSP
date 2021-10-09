@@ -33,17 +33,16 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 
     /*
     Se inicializan las variables y el vector que se utilizara para almacenar los valores del preprocesamiento.
-    El vector es de longitud 25 porque es la maxima longitud que puede tener el patron.
+    El vector es de longitud igual a la longitud del patron.
     La posicion cero del vector siempre es cero.
     */
-    vector<int>kmpArray(25);
+    vector<int>kmpArray(lenPattern);
     kmpArray[0] = 0;
     int i = 1;
     int j = 0;
 
     //El ciclo calcula los valores del desde i=1 hasta lenPattern -1
     while (i < lenPattern) {
-
         if (pattern[i] == pattern[j]) { //Los caracteres son iguales.
             j++;
             kmpArray[i] = j;
@@ -111,7 +110,7 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
  La funcion LongestCommonSubstring se encarga de encontrar las posiciones donde se encuentra 
  el substring más largo en común entre dos strings.
  Esta función recibe 4 parámetros de tipo (string , string , int, int ).
- 
+ El primer parametro
 */
 void longestCommonSubstring(string a, string b, int lenA, int lenB) {
     // Se crea la matriz de valores que permitirá guardar los valores del Longest Substring.
@@ -136,7 +135,6 @@ void longestCommonSubstring(string a, string b, int lenA, int lenB) {
                 /*Si la longitud del substring más grande encontrado hasta ahorita es menor que el valor actual en la tabla
                 guardar tanto la longitud como el indice final de substring*/
                 if (lenLongestSubstring < table[i][j]) {
-                    
                     lenLongestSubstring = table[i][j];
                     endIndex = i;
                 }
