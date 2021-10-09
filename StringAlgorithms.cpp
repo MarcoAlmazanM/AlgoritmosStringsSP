@@ -138,8 +138,9 @@ void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
                     tableRow = i;
                 }
             }
-            else
+            else{
                 rows[i][j] = 0;
+            }
         }
     }
 
@@ -150,8 +151,9 @@ void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
 
 string aumenta(string S){
     string s = "";
+
     for (char c:S){
-    s = s+"|"+c;
+        s = s+"|"+c;
     }
     return s+"|";
 }
@@ -160,60 +162,61 @@ pair<int,int> manacher(string S){
 
     pair<int,int> res(0,0); // resultado (inicio, longitud)
 
-    if (S.length() == 0) // S es nulo
+    if (S.length() == 0){// S es nulo
         return res;
+    }
 
     string T = aumenta(S);  // llamar a función
     int N = T.length();
 
     // longitud y centro del máximo palíndromo encontrado
-    int maxLong=1, maxCentro=1; // Hasta ahora posición 1
+    //int maxLong=1, maxCentro=1; // Hasta ahora posición 1
+    //int C = 1;
+    int C=1, Li = 0, Ri = 0, maxLong=1, maxCentro=1;
     vector <int> L(N);
-    int C = 1;
-    int Li = 0, Ri = 0;
     bool expansion = false; // true si requiera expansión
 
     L[0]=0; L[1]=1;
 
     for (Ri=2; Ri<N; Ri++){
+        expansion = false;
+        Li = C - (Ri-C);
 
-    expansion = false;
-    Li = C - (Ri-C);
-
-    if ((C+L[C])-Ri >= 0){
-
-      if(L[Li] < (C+L[C])-Ri) // Caso 1
-            L[Ri] = L[Li];
-
-            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) == N-1) // Caso 2
-
+        if ((C+L[C])-Ri >= 0){
+            if(L[Li] < (C+L[C])-Ri){//Caso 1
                 L[Ri] = L[Li];
+            }
+
+            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) == N-1){ // Caso 2
+                L[Ri] = L[Li];
+            }
 
             else if(L[Li] == (C+L[C])-Ri && (C+L[C]) < N-1){ // Caso 3
-
-                    L[Ri] = L[Li];
-                    expansion = true; // requiere expansión
+                L[Ri] = L[Li];
+                expansion = true; // requiere expansión
             }
 
-            else if(L[Li] > (C+L[C])-Ri){ // Case 4
+            else if(L[Li] > (C+L[C])-Ri){ // Caso 4
                 L[Ri] = (C+L[C])-Ri;
                 expansion = true; // requiere expansión
-
             }
-    }
-    else{
-
-        L[Ri] = 0;
-        expansion = true;  // requiere expansión
-
         }
-        if (expansion) // hacer la expansión hasta donde se pueda
+        else{
+            L[Ri] = 0;
+            expansion = true;  // requiere expansión
+        }
 
-          while ((Ri + L[Ri]) < N && (Ri - L[Ri]) > 0 && T[Ri+L[Ri]+1] == T[Ri-L[Ri]-1])
-            L[Ri]++;
-        if (Ri + L[Ri] > (C + L[C]))
-          // si el nuevo palíndromo se expande más allá de C
+        if (expansion){// hacer la expansión hasta donde se pueda
+          while (((Ri + L[Ri]) < N) && ((Ri - L[Ri]) > 0) && T[Ri+L[Ri]+1] == T[Ri-L[Ri]-1]){
+              L[Ri]++;
+          }
+        }
+
+        if (Ri + L[Ri] > (C + L[C])){
+            // si el nuevo palíndromo se expande más allá de C 
             C = Ri;
+        }
+
         if(L[Ri] > maxLong) {
           // Guardar longitud y centro del palíndromo más grande,
           // hasta ahora
