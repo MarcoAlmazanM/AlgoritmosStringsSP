@@ -156,87 +156,93 @@ pair<int,int> longestCommonSubstring(string transmissionFile1, string transmissi
     return result;
 }
 
-string aumenta(string S){
-    string s = "";
+void findLongestPalindromicString(string text){
+	int N = text.size();
+	if(N == 0)
+		return;
+	N = 2*N + 1; //Position count
+	int L[N]; //LPS Length Array
+	L[0] = 0;
+	L[1] = 1;
+	int C = 1; //centerPosition
+	int R = 2; //centerRightPosition
+	int i = 0; //currentRightPosition
+	int iMirror; //currentLeftPosition
+	int expand = -1;
+	int diff = -1;
+	int maxLPSLength = 0;
+	int maxLPSCenterPosition = 0;
+	int start = -1;
+	int end = -1;
+	
+	//Uncomment it to print LPS Length array
+	//printf("%d %d ", L[0], L[1]);
+	for (i = 2; i < N; i++)
+	{
+		//get currentLeftPosition iMirror for currentRightPosition i
+		iMirror = 2*C-i;
+		//Reset expand - means no expansion required
+		expand = 0;
+		diff = R - i;
+		//If currentRightPosition i is within centerRightPosition R
+		if(diff >= 0)
+		{
+			if(L[iMirror] < diff) // Case 1
+				L[i] = L[iMirror];
+			else if(L[iMirror] == diff && R == N-1) // Case 2
+				L[i] = L[iMirror];
+			else if(L[iMirror] == diff && R < N-1) // Case 3
+			{
+					L[i] = L[iMirror];
+					expand = 1; // expansion required
+			}
+			else if(L[iMirror] > diff) // Case 4
+			{
+				L[i] = diff;
+				expand = 1; // expansion required
+			}
+		}
+		else
+		{
+			L[i] = 0;
+			expand = 1; // expansion required
+		}
+		
+		if (expand == 1)
+		{
+			//Attempt to expand palindrome centered at currentRightPosition i
+			//Here for odd positions, we compare characters and
+			//if match then increment LPS Length by ONE
+			//If even position, we just increment LPS by ONE without
+			//any character comparison
+			while (((i + L[i]) < N && (i - L[i]) > 0) &&
+				( ((i + L[i] + 1) % 2 == 0) ||
+				(text[(i + L[i] + 1)/2] == text[(i-L[i]-1)/2] )))
+			{
+				L[i]++;
+			}
+		}
 
-    for (char c:S){
-        s = s+"|"+c;
-    }
-    return s+"|";
+		if(L[i] > maxLPSLength) // Track maxLPSLength
+		{
+			maxLPSLength = L[i];
+			maxLPSCenterPosition = i;
+		}
+
+		// If palindrome centered at currentRightPosition i
+		// expand beyond centerRightPosition R,
+		// adjust centerPosition C based on expanded palindrome.
+		if (i + L[i] > R)
+		{
+			C = i;
+			R = i + L[i];
+		}
+	}
+	start = (maxLPSCenterPosition - maxLPSLength)/2;
+	end = start + maxLPSLength - 1;
+	cout << start << " " << end << "\n";
 }
 
-pair<int,int> manacher(string S){
-
-    pair<int,int> res(0,0); // resultado (inicio, longitud)
-
-    if (S.length() == 0){// S es nulo
-        return res;
-    }
-
-    string T = aumenta(S);  // llamar a función
-    int N = T.length();
-
-    // longitud y centro del máximo palíndromo encontrado
-    //int maxLong=1, maxCentro=1; // Hasta ahora posición 1
-    //int C = 1;
-    int C=1, Li = 0, Ri = 0, maxLong=1, maxCentro=1;
-    vector <int> L(N);
-    bool expansion = false; // true si requiera expansión
-
-    L[0]=0; L[1]=1;
-
-    for (Ri=2; Ri<N; Ri++){
-        expansion = false;
-        Li = C - (Ri-C);
-
-        if ((C+L[C])-Ri >= 0){
-            if(L[Li] < (C+L[C])-Ri){//Caso 1
-                L[Ri] = L[Li];
-            }
-
-            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) == N-1){ // Caso 2
-                L[Ri] = L[Li];
-            }
-
-            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) < N-1){ // Caso 3
-                L[Ri] = L[Li];
-                expansion = true; // requiere expansión
-            }
-
-            else if(L[Li] > (C+L[C])-Ri){ // Caso 4
-                L[Ri] = (C+L[C])-Ri;
-                expansion = true; // requiere expansión
-            }
-        }
-        else{
-            L[Ri] = 0;
-            expansion = true;  // requiere expansión
-        }
-
-        if (expansion){// hacer la expansión hasta donde se pueda
-          while (((Ri + L[Ri]) < N) && ((Ri - L[Ri]) > 0) && T[Ri+L[Ri]+1] == T[Ri-L[Ri]-1]){
-              L[Ri]++;
-          }
-        }
-
-        if (Ri + L[Ri] > (C + L[C])){
-            // si el nuevo palíndromo se expande más allá de C 
-            C = Ri;
-        }
-
-        if(L[Ri] > maxLong) {
-          // Guardar longitud y centro del palíndromo más grande,
-          // hasta ahora
-            maxLong = L[Ri];
-            maxCentro = Ri;
-        }
-    }
-    // obtener inicio y longitud del máximo palíndromo encontrado
-    // recordando que la longitud de T es el doble de la de S
-    res.first = (maxCentro - maxLong)/2; // inicio en S
-    res.second = res.first + maxLong - 1 ; // fin de S
-    return res;
-}
 
 /*
 En el main se declaran e inicializan las variables que se van a utilizar 
@@ -313,12 +319,12 @@ int main() {
     del algoritmo de manacher para la búsqueda del palíndromo, así como de su posición inicial
     y final.
     */
-    palindrome1 = manacher(tFile1Content);
-    palindrome2 = manacher(tFile2Content);
+    findLongestPalindromicString(tFile1Content);
+    findLongestPalindromicString(tFile2Content);
     
-    cout << palindrome1.first << ' ' << palindrome1.second<< "\n";
+    // cout << palindrome1.first << ' ' << palindrome1.second<< "\n";
 
-    cout << palindrome2.first << ' ' << palindrome2.second << "\n";
+    // cout << palindrome2.first << ' ' << palindrome2.second << "\n";
 
     /*
     Este segmento corresponde a la parte 3 de la actividad, donde se obtiene la posición inicial
