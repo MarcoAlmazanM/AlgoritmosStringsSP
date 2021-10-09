@@ -17,14 +17,14 @@ string readWholeFile(string fileName) {
     else {
         fileContent << file.rdbuf();
     }
-    
+
     return fileContent.str();
 }
 
 /*
  La funcion preKMPAlgorithm se encarga del preprocesamiento del patron para poder generar un arreglo de valores,
  que nos ayudara a poder realizar la busqueda del patron de manera mas sencilla dentro del string principal.
- Esta funciÃ³n recibe 2 parÃ¡metros de tipo (string y entero ).
+ Esta función recibe 2 parámetros de tipo (string y entero ).
  El string es el patron que ingreso el usuario.
  El entero es la longitud de dicho patron.
  Complejidad O(m) donde m es la longitud del patron.
@@ -64,7 +64,7 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 
 /*
  La funcion kmpSearching se encarga de buscar el patron dentro del string principal con ayuda del vector que obtuvimos en el preprocesamiento.
- Esta funciÃ³n recibe 3 parÃ¡metros de tipo (string , string y vector ).
+ Esta función recibe 3 parámetros de tipo (string , string y vector ).
  El primer string es el genoma (string principal) que ingreso el usuario.
  El segundo string es el patron que ingreso el usuario.
  El vector es el que se obtuvo al realizar el preprocesamiento del patron.
@@ -108,10 +108,11 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
 }
 
 void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
-    // Se crea la tabla para guardar los valores (Como lo veÃ­amos en clase)
+    // Se crea la tabla para guardar los valores (Como lo veíamos en clase)
+    // Pasar arreglo a vector para permitir asignación constante.
     int LongestCommonSuffix[lenA + 1][lenB + 1];
 
-    // Longitud del substring mÃ¡s largo
+    // Longitud del substring más largo
     int lenLongestSubstring=0;
     // Fila de la tabla
     int tableRow;
@@ -141,13 +142,95 @@ void LongestCommonSubstring(string a, string b, int lenA, int lenB) {
     // Aqui se imprimen las posiciones porfa chequen todos los casos que se les ocurran segun yo ya quedo.
     cout << tableRow -lenLongestSubstring <<"\n";
     cout << tableCol -1 << "\n";
-    
+
+}
+
+string aumenta(string S){
+    string s = "";
+    for (char c:S){
+    s = s+"|"+c;
+    }
+    return s+"|";
+}
+
+pair<int,int> manacher(string S){
+
+    pair<int,int> res(0,0); // resultado (inicio, longitud)
+
+    if (S.length() == 0) // S es nulo
+        return res;
+
+    string T = aumenta(S);  // llamar a función
+    int N = T.length();
+
+    // longitud y centro del máximo palíndromo encontrado
+    int maxLong=1, maxCentro=1; // Hasta ahora posición 1
+    int L[N];
+    int C = 1;
+    int Li = 0, Ri = 0;
+    bool expansion = false; // true si requiera expansión
+
+    L[0]=0; L[1]=1;
+
+    for (Ri=2; Ri<N; Ri++){
+
+    expansion = false;
+    Li = C - (Ri-C);
+
+    if ((C+L[C])-Ri >= 0){
+
+      if(L[Li] < (C+L[C])-Ri) // Caso 1
+            L[Ri] = L[Li];
+
+            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) == N-1) // Caso 2
+
+                L[Ri] = L[Li];
+
+            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) < N-1){ // Caso 3
+
+                    L[Ri] = L[Li];
+                    expansion = true; // requiere expansión
+            }
+
+            else if(L[Li] > (C+L[C])-Ri){ // Case 4
+                L[Ri] = (C+L[C])-Ri;
+                expansion = true; // requiere expansión
+
+            }
+    }
+    else{
+
+        L[Ri] = 0;
+        expansion = true;  // requiere expansión
+
+        }
+        if (expansion) // hacer la expansión hasta donde se pueda
+
+          while ((Ri + L[Ri]) < N && (Ri - L[Ri]) > 0 && T[Ri+L[Ri]+1] == T[Ri-L[Ri]-1])
+            L[Ri]++;
+        if (Ri + L[Ri] > (C + L[C]))
+          // si el nuevo palíndromo se expande más allá de C
+            C = Ri;
+        if(L[Ri] > maxLong) {
+          // Guardar longitud y centro del palíndromo más grande,
+          // hasta ahora
+            maxLong = L[Ri];
+            maxCentro = Ri;
+        }
+    }
+    // obtener inicio y longitud del máximo palíndromo encontrado
+    // recordando que la longitud de T es el doble de la de S
+    res.first = (maxCentro - maxLong)/2; // inicio en S
+    res.second = maxLong; // longitud en S
+    return res;
 }
 
 int main() {
 
     bool foundPattern = false;
     bool fileFinish = true;
+    pair <int, int> palindrome1;
+    pair <int, int> palindrome2;
     string tFileContent, tFile1Content, tFile2Content, mcodeFileContent;
     vector<string> fileContent(3);
     vector<int>kmpArray;
@@ -166,7 +249,7 @@ int main() {
         positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
         if (foundPattern) {
             cout << "True" << " ";
-            for (int i = 0; i < positions.size(); i++) {
+            for (unsigned int i = 0; i < positions.size(); i++) {
                 cout << positions[i] << " ";
             }
             cout << "\n";
@@ -181,6 +264,14 @@ int main() {
             fileFinish = false;
         }
     }
+
+    palindrome1 = manacher(tFile1Content);
+    palindrome2 = manacher(tFile2Content);
+
+    cout << palindrome1.first << ' ' << palindrome1.second << "\n";
+
+    cout << palindrome2.first << ' ' << palindrome2.second << "\n";
+
     LongestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
     return 0;
 }
