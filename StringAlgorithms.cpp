@@ -6,18 +6,31 @@
 
 using namespace std;
 
+/*
+ La funcion readWholeFile se encarga de hacer las lecturas a los archivos para devolver una cadena de
+ caracteres que las demas funciones puedan ocupar.
+ Esta funcion recibe 1 parametro de tipo string (El nombre del archivo).
+ Complejidad O(n) donde n es la longitud de la cadena de caracteres en el archivo de texto.
+*/
 string readWholeFile(string fileName) {
+    // Se declaran las variables a utilizar.
     stringstream fileContent;
     ifstream file;
+
+    // Se abre el archivo en modo lectura.
     file.open(fileName, ios::in);
+
+    // Si no se puede abrir el archivo muestra un error.
     if (file.fail()) {
         cout << "No se pudo abrir el archivo - '"
             << fileName << "'\n";
     }
     else {
+        // Se lee el archivo y se guardan los contenidos a una variable.
         fileContent << file.rdbuf();
     }
 
+    // Se regresa la cadena de caracteres que contiene la lectura del archivo.
     return fileContent.str();
 }
 
@@ -36,13 +49,14 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
     El vector es de longitud igual a la longitud del patron.
     La posicion cero del vector siempre es cero.
     */
-    vector<int>kmpArray(lenPattern);
+    vector<int>kmpArray(25);
     kmpArray[0] = 0;
     int i = 1;
     int j = 0;
 
     //El ciclo calcula los valores del desde i=1 hasta lenPattern -1
     while (i < lenPattern) {
+
         if (pattern[i] == pattern[j]) { //Los caracteres son iguales.
             j++;
             kmpArray[i] = j;
@@ -64,10 +78,10 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 /*
  La funcion kmpSearching se encarga de buscar el patron dentro del string principal con ayuda del vector que obtuvimos en el preprocesamiento.
  Esta función recibe 3 parámetros de tipo (string , string y vector ).
- El primer string es el genoma (string principal) que ingreso el usuario.
+ El primer string es la transmision (string principal) que ingreso el usuario.
  El segundo string es el patron que ingreso el usuario.
  El vector es el que se obtuvo al realizar el preprocesamiento del patron.
- Complejidad O(n) donde n es la longitud del genoma (string principal).
+ Complejidad O(n) donde n es la longitud de la transmision (string principal).
 */
 vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &foundPattern) {
 
@@ -107,7 +121,7 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
 }
 
 /*
- La funcion LongestCommonSubstring se encarga de encontrar las posiciones donde se encuentra 
+ La funcion LongestCommonSubstring se encarga de encontrar las posiciones donde se encuentra
  el substring más largo en común entre dos strings.
  Esta función recibe 4 parámetros de tipo (string , string , int, int ).
  El primer parametro
@@ -121,7 +135,7 @@ void longestCommonSubstring(string a, string b, int lenA, int lenB) {
     int lenLongestSubstring=0;
     // Indice Final del substring
     int endIndex = 0;
-    
+
 
     // Ciclo donde se contruye la tabla de valores que tendra el Longest Common Substring.
     for (int i = 0; i <= lenA; i++){
@@ -214,7 +228,7 @@ pair<int,int> manacher(string S){
         }
 
         if (Ri + L[Ri] > (C + L[C])){
-            // si el nuevo palíndromo se expande más allá de C 
+            // si el nuevo palíndromo se expande más allá de C
             C = Ri;
         }
 
