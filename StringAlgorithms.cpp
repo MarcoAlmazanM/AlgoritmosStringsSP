@@ -6,18 +6,31 @@
 
 using namespace std;
 
+/*
+ La funcion readWholeFile se encarga de hacer las lecturas a los archivos para devolver una cadena de
+ caracteres que las demas funciones puedan ocupar.
+ Esta funcion recibe 1 parametro de tipo string (El nombre del archivo).
+ Complejidad O(n) donde n es la longitud de la cadena de caracteres en el archivo de texto.
+*/
 string readWholeFile(string fileName) {
+    // Se declaran las variables a utilizar.
     stringstream fileContent;
     ifstream file;
+
+    // Se abre el archivo en modo lectura.
     file.open(fileName, ios::in);
+
+    // Si no se puede abrir el archivo muestra un error.
     if (file.fail()) {
         cout << "No se pudo abrir el archivo - '"
             << fileName << "'\n";
     }
     else {
+        // Se lee el archivo y se guardan los contenidos a una variable.
         fileContent << file.rdbuf();
     }
 
+    // Se regresa la cadena de caracteres que contiene la lectura del archivo.
     return fileContent.str();
 }
 
@@ -36,13 +49,14 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
     El vector es de longitud igual a la longitud del patron.
     La posicion cero del vector siempre es cero.
     */
-    vector<int>kmpArray(lenPattern);
+    vector<int>kmpArray(25);
     kmpArray[0] = 0;
     int i = 1;
     int j = 0;
 
     //El ciclo calcula los valores del desde i=1 hasta lenPattern -1
     while (i < lenPattern) {
+
         if (pattern[i] == pattern[j]) { //Los caracteres son iguales.
             j++;
             kmpArray[i] = j;
@@ -64,10 +78,10 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 /*
  La funcion kmpSearching se encarga de buscar el patron dentro del string principal con ayuda del vector que obtuvimos en el preprocesamiento.
  Esta función recibe 3 parámetros de tipo (string , string y vector ).
- El primer string es el genoma (string principal) que ingreso el usuario.
+ El primer string es la transmision (string principal) que ingreso el usuario.
  El segundo string es el patron que ingreso el usuario.
  El vector es el que se obtuvo al realizar el preprocesamiento del patron.
- Complejidad O(n) donde n es la longitud del genoma (string principal).
+ Complejidad O(n) donde n es la longitud de la transmision (string principal).
 */
 vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &foundPattern) {
 
@@ -107,30 +121,32 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
 }
 
 /*
- La funcion LongestCommonSubstring se encarga de encontrar las posiciones donde se encuentra 
- el substring más largo en común entre dos strings.
+ La funcion longestCommonSubstring se encarga de encontrar las posiciones de inicio y fin donde se encuentra 
+ el substring más largo en común entre los dos archivos de transmision.
  Esta función recibe 4 parámetros de tipo (string , string , int, int ).
- El primer parametro
+ El primer string se trata del contenido del primer archivo de transmision.
+ El primer string se trata del contenido del primer archivo de transmision.
+ El primer entero contiene la longitud del primer archivo de transmision.
+ El segundo entero contiene la longitud del segundo archivo de transmision.
 */
-void longestCommonSubstring(string a, string b, int lenA, int lenB) {
+void longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
     // Se crea la matriz de valores que permitirá guardar los valores del Longest Substring.
-    vector < vector <int> > table(lenA+1);
-    vector <int> cols(lenB+1);
+    vector < vector <int> > table(lenTransmission1+1);
+    vector <int> cols(lenTransmission2+1);
 
     // Longitud del substring más largo
     int lenLongestSubstring=0;
     // Indice Final del substring
     int endIndex = 0;
     
-
     // Ciclo donde se contruye la tabla de valores que tendra el Longest Common Substring.
-    for (int i = 0; i <= lenA; i++){
-        for (int j = 0; j <= lenB; j++){
+    for (int i = 0; i <= lenTransmission1; i++){
+        for (int j = 0; j <= lenTransmission2; j++){
             if ((i == 0 )|| (j == 0)) {
                 table[i] = cols;
                 table[i][j] = 0;
             }
-            else if (a[i - 1] == b[j - 1]) {
+            else if (transmissionFile1[i - 1] == transmissionFile2[j - 1]) {
                 table[i][j] = table[i - 1][j - 1] + 1;
                 /*Si la longitud del substring más grande encontrado hasta ahorita es menor que el valor actual en la tabla
                 guardar tanto la longitud como el indice final de substring*/
@@ -214,7 +230,7 @@ pair<int,int> manacher(string S){
         }
 
         if (Ri + L[Ri] > (C + L[C])){
-            // si el nuevo palíndromo se expande más allá de C 
+            // si el nuevo palíndromo se expande más allá de C
             C = Ri;
         }
 
