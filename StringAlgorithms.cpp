@@ -6,31 +6,18 @@
 
 using namespace std;
 
-/*
- La funcion readWholeFile se encarga de hacer las lecturas a los archivos para devolver una cadena de
- caracteres que las demas funciones puedan ocupar.
- Esta funcion recibe 1 parametro de tipo string (El nombre del archivo).
- Complejidad O(n) donde n es la longitud de la cadena de caracteres en el archivo de texto.
-*/
 string readWholeFile(string fileName) {
-    // Se declaran las variables a utilizar.
     stringstream fileContent;
     ifstream file;
-
-    // Se abre el archivo en modo lectura.
     file.open(fileName, ios::in);
-
-    // Si no se puede abrir el archivo muestra un error.
     if (file.fail()) {
         cout << "No se pudo abrir el archivo - '"
             << fileName << "'\n";
     }
     else {
-        // Se lee el archivo y se guardan los contenidos a una variable.
         fileContent << file.rdbuf();
     }
 
-    // Se regresa la cadena de caracteres que contiene la lectura del archivo.
     return fileContent.str();
 }
 
@@ -49,14 +36,13 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
     El vector es de longitud igual a la longitud del patron.
     La posicion cero del vector siempre es cero.
     */
-    vector<int>kmpArray(25);
+    vector<int>kmpArray(lenPattern);
     kmpArray[0] = 0;
     int i = 1;
     int j = 0;
 
     //El ciclo calcula los valores del desde i=1 hasta lenPattern -1
     while (i < lenPattern) {
-
         if (pattern[i] == pattern[j]) { //Los caracteres son iguales.
             j++;
             kmpArray[i] = j;
@@ -78,10 +64,10 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 /*
  La funcion kmpSearching se encarga de buscar el patron dentro del string principal con ayuda del vector que obtuvimos en el preprocesamiento.
  Esta función recibe 3 parámetros de tipo (string , string y vector ).
- El primer string es la transmision (string principal) que ingreso el usuario.
+ El primer string es el genoma (string principal) que ingreso el usuario.
  El segundo string es el patron que ingreso el usuario.
  El vector es el que se obtuvo al realizar el preprocesamiento del patron.
- Complejidad O(n) donde n es la longitud de la transmision (string principal).
+ Complejidad O(n) donde n es la longitud del genoma (string principal).
 */
 vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &foundPattern) {
 
@@ -129,7 +115,10 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
  El primer entero contiene la longitud del primer archivo de transmision.
  El segundo entero contiene la longitud del segundo archivo de transmision.
 */
-void longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
+pair<int,int> longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
+    
+    pair<int,int> result;
+    
     // Se crea la matriz de valores que permitirá guardar los valores del Longest Substring.
     vector < vector <int> > table(lenTransmission1+1);
     vector <int> cols(lenTransmission2+1);
@@ -161,9 +150,10 @@ void longestCommonSubstring(string transmissionFile1, string transmissionFile2, 
         }
     }
 
-    // Se imprime la posicion donde inicia el Longest Common Substring asi como donde finaliza.
-    cout << endIndex -lenLongestSubstring << ' ';
-    cout << endIndex -1 << "\n";
+    result.first = endIndex -lenLongestSubstring;
+    result.second = endIndex -1;
+
+    return result;
 }
 
 string aumenta(string S){
@@ -230,7 +220,7 @@ pair<int,int> manacher(string S){
         }
 
         if (Ri + L[Ri] > (C + L[C])){
-            // si el nuevo palíndromo se expande más allá de C
+            // si el nuevo palíndromo se expande más allá de C 
             C = Ri;
         }
 
@@ -255,16 +245,22 @@ para el funcionamiento y control del programa.
 int main() {
     /*
     Se establecen 2 booleanos cuyo proposito es de variable de control del
-    flujo del programa para las condiciones que se encuentran dentro del ciclo
+    flujo del programa para las condiciones que se encuentran dentro del ciclo.
     */
     bool foundPattern = false;
     bool fileFinish = true;
     /*
     Se establecen elementos de tipo pair para procesar y almacenar las posiciones iniciales y finales
-    respecto al punto de los palindromos
+    respecto al punto de los palindromos.
     */
     pair <int, int> palindrome1;
     pair <int, int> palindrome2;
+
+    /*
+    Se establecen elementos de tipo pair para procesar y almacenar las posiciones iniciales y finales
+    respecto al Longest Common Substring.
+    */
+    pair <int, int> positionsLCS;
 
     /*
     Se indican las variables donde se almacena y ordena el contenido de los archivos
@@ -294,9 +290,10 @@ int main() {
     for (int i = 0; i < 3; i++) {
         kmpArray = preKMPAlgorithm(fileContent[i], fileContent[i].size());
         positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
+        int vectorLength = positions.size();
         if (foundPattern) {
             cout << "true" << " ";
-            for (unsigned int i = 0; i < positions.size(); i++) {
+            for (int i = 0; i < vectorLength; i++) {
                 cout << positions[i] << " ";
             }
             cout << "\n";
@@ -328,6 +325,10 @@ int main() {
     y final del substring común más largo en la transmisión de archivos, se requiere de los contenidos
     del archivo, así como su respectivo tamaño
     */
-    longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
+    positionsLCS = longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
+
+    // Se imprime la posicion donde inicia el Longest Common Substring asi como donde finaliza.
+    cout << positionsLCS.first << ' ' << positionsLCS.second << "\n";
+
     return 0;
 }
