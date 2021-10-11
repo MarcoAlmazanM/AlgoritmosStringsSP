@@ -150,8 +150,8 @@ pair<int,int> longestCommonSubstring(string transmissionFile1, string transmissi
         }
     }
 
-    result.first = endIndex -lenLongestSubstring;
-    result.second = endIndex -1;
+    result.first = endIndex -lenLongestSubstring + 1;
+    result.second = endIndex;
 
     return result;
 }
@@ -278,9 +278,9 @@ int main() {
     tFile1Content = tFileContent;
     tFile2Content = readWholeFile("transmission2.txt");
 
-    fileContent[0] = readWholeFile("mcodeFile1.txt");
-    fileContent[1] = readWholeFile("mcodeFile2.txt");
-    fileContent[2] = readWholeFile("mcodeFile3.txt");
+    fileContent[0] = readWholeFile("mcode1.txt");
+    fileContent[1] = readWholeFile("mcode2.txt");
+    fileContent[2] = readWholeFile("mcode3.txt");
 
     /*
     Esta seccion es el proceso de ejecucion del programa, en esta primera parte se hace un ciclo
