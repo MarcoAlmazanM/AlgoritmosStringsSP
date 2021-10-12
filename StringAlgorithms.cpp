@@ -234,7 +234,7 @@ pair<int,int> manacher(string S){
     // obtener inicio y longitud del máximo palíndromo encontrado
     // recordando que la longitud de T es el doble de la de S
     res.first = (maxCentro - maxLong)/2; // inicio en S
-    res.second = res.first + maxLong - 1 ; // fin de S
+    res.second = res.first + maxLong; // fin de S
     return res;
 }
 
@@ -316,9 +316,9 @@ int main() {
     palindrome1 = manacher(tFile1Content);
     palindrome2 = manacher(tFile2Content);
     
-    cout << palindrome1.first << ' ' << palindrome1.second<< "\n";
+    cout << palindrome1.first + 1 << ' ' << palindrome1.second<< "\n";
 
-    cout << palindrome2.first << ' ' << palindrome2.second << "\n";
+    cout << palindrome2.first + 1 << ' ' << palindrome2.second << "\n";
 
     /*
     Este segmento corresponde a la parte 3 de la actividad, donde se obtiene la posición inicial
