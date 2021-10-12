@@ -38,7 +38,7 @@ string readWholeFile(string fileName) {
  La funcion preKMPAlgorithm se encarga del preprocesamiento del patron para poder generar un arreglo de valores,
  que nos ayudara a poder realizar la busqueda del patron de manera mas sencilla dentro del string principal.
  Esta función recibe 2 parámetros de tipo (string y entero ).
- El string es el patron que ingreso el usuario.
+ El string es el patron que es el contenido de los archivos de codigo malicioso.
  El entero es la longitud de dicho patron.
  Complejidad O(m) donde m es la longitud del patron.
 */
@@ -77,10 +77,10 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
 /*
  La funcion kmpSearching se encarga de buscar el patron dentro del string principal con ayuda del vector que obtuvimos en el preprocesamiento.
  Esta función recibe 3 parámetros de tipo (string , string y vector ).
- El primer string es el genoma (string principal) que ingreso el usuario.
+ El primer string es la transmision (string principal) que ingreso el usuario.
  El segundo string es el patron que ingreso el usuario.
  El vector es el que se obtuvo al realizar el preprocesamiento del patron.
- Complejidad O(n) donde n es la longitud del genoma (string principal).
+ Complejidad O(n) donde n es la longitud de la transmision (string principal).
 */
 vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &foundPattern) {
 
