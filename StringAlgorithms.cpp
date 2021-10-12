@@ -6,18 +6,31 @@
 
 using namespace std;
 
+/*
+ La funcion readWholeFile se encarga de hacer las lecturas a los archivos para devolver una cadena de
+ caracteres que las demas funciones puedan ocupar.
+ Esta funcion recibe 1 parametro de tipo string (El nombre del archivo).
+ Complejidad O(n) donde n es la longitud de la cadena de caracteres en el archivo de texto.
+*/
 string readWholeFile(string fileName) {
+    // Se declaran las variables a utilizar.
     stringstream fileContent;
     ifstream file;
+
+    // Se abre el archivo en modo lectura.
     file.open(fileName, ios::in);
+
+    // Si no se puede abrir el archivo muestra un error.
     if (file.fail()) {
         cout << "No se pudo abrir el archivo - '"
             << fileName << "'\n";
     }
     else {
+        // Se lee el archivo y se guardan los contenidos a una variable.
         fileContent << file.rdbuf();
     }
 
+    // Se regresa la cadena de caracteres que contiene la lectura del archivo.
     return fileContent.str();
 }
 
