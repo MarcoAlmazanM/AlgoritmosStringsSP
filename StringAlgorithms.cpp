@@ -300,6 +300,7 @@ int main() {
     que itera un numero de veces proporcional al vector fileContent, cada iteracion ejecuta prepKMPAlgorithm
     y kmpSearching para la resolucion de la primera parte de la actividad
     */
+    cout<<"Parte 1" << "\n";
     for (int i = 0; i < 3; i++) {
         kmpArray = preKMPAlgorithm(fileContent[i], fileContent[i].size());
         positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
@@ -329,6 +330,8 @@ int main() {
     palindrome1 = manacher(tFile1Content);
     palindrome2 = manacher(tFile2Content);
     
+    cout<<"\n"<<"Parte 2" << "\n";
+
     cout << palindrome1.first + 1 << ' ' << palindrome1.second<< "\n";
 
     cout << palindrome2.first + 1 << ' ' << palindrome2.second << "\n";
@@ -341,6 +344,7 @@ int main() {
     positionsLCS = longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
 
     // Se imprime la posicion donde inicia el Longest Common Substring asi como donde finaliza.
+    cout<<"\n"<<"Parte 3" << "\n";
     cout << positionsLCS.first << ' ' << positionsLCS.second << "\n";
 
     return 0;
