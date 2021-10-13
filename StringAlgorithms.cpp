@@ -128,6 +128,8 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
  El primer string se trata del contenido del primer archivo de transmision.
  El primer entero contiene la longitud del primer archivo de transmision.
  El segundo entero contiene la longitud del segundo archivo de transmision.
+
+ La complejidad de este algoritmo es de O(n*m), siendo n la "cadena principal" y m la secuencia.
 */
 void longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
     // Se crea la matriz de valores que permitirá guardar los valores del Longest Substring.
@@ -166,6 +168,11 @@ void longestCommonSubstring(string transmissionFile1, string transmissionFile2, 
     cout << endIndex -1 << "\n";
 }
 
+/*
+La funcion "aumenta" funciona como complemento a la funcion de manacher, se encarga de colocar un caracter adicional
+entre cada caracter de la cadena, con esto se alarga el string de tal forma que el tamaño resultante siempre resulta
+en un numero impar.
+*/
 string aumenta(string S){
     string s = "";
 
@@ -175,61 +182,89 @@ string aumenta(string S){
     return s+"|";
 }
 
+/*
+La funcion manacher(string S) se encarga de implementar el algoritmo de manacher, el cual consiste, a grandes rasgos en 
+encontrar la subcadena mas larga(que sea un palindromo) de una cadena.
+
+La funcion es de tipo pair y recibe 1 parametro de tipo string, el cual representa la cadena sobre la que se ejecuta el algoritmo.
+La complejidad presentada en este algoritmo es de O(n), siendo n la longitud de la cadena.
+*/
 pair<int,int> manacher(string S){
 
-    pair<int,int> res(0,0); // resultado (inicio, longitud)
+    // Se declara la variable res representado al resultado(inicio y fin de la subcadena encontrada)
+    pair<int,int> res(0,0);
 
-    if (S.length() == 0){// S es nulo
+    //S es nulo
+    if (S.length() == 0){
         return res;
     }
 
-    string T = aumenta(S);  // llamar a función
+    // Convierte el tamaño del string actual a un tamaño impar
+    string T = aumenta(S);
     int N = T.length();
 
     // longitud y centro del máximo palíndromo encontrado
-    //int maxLong=1, maxCentro=1; // Hasta ahora posición 1
-    //int C = 1;
+    // Hasta ahora posición 1
     int C=1, Li = 0, Ri = 0, maxLong=1, maxCentro=1;
     vector <int> L(N);
-    bool expansion = false; // true si requiera expansión
+
+    // true si requiera expansión
+    bool expansion = false;
 
     L[0]=0; L[1]=1;
 
+    /*
+    En esta parte empieza el recorrido a partir de la longitud de la cadena modificada por la funcion "aumenta".
+    Una vez finalizado el ciclo, se obtienen ambas partes del pair, representando la posicion inicial y
+    final respectiva del palindromo encontrado
+    */
     for (Ri=2; Ri<N; Ri++){
         expansion = false;
         Li = C - (Ri-C);
 
         if ((C+L[C])-Ri >= 0){
-            if(L[Li] < (C+L[C])-Ri){//Caso 1
+            // Caso 1
+            if(L[Li] < (C+L[C])-Ri){
                 L[Ri] = L[Li];
             }
 
-            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) == N-1){ // Caso 2
+            // Caso 2
+            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) == N-1){
                 L[Ri] = L[Li];
             }
 
-            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) < N-1){ // Caso 3
+            // Caso 3
+            else if(L[Li] == (C+L[C])-Ri && (C+L[C]) < N-1){
                 L[Ri] = L[Li];
-                expansion = true; // requiere expansión
+
+                // requiere expansión
+                expansion = true;
             }
 
-            else if(L[Li] > (C+L[C])-Ri){ // Caso 4
+            // Caso 4
+            else if(L[Li] > (C+L[C])-Ri){
                 L[Ri] = (C+L[C])-Ri;
-                expansion = true; // requiere expansión
+
+                // requiere expansión
+                expansion = true;
             }
         }
         else{
             L[Ri] = 0;
-            expansion = true;  // requiere expansión
+
+            // requiere expansión
+            expansion = true;
         }
 
-        if (expansion){// hacer la expansión hasta donde se pueda
+        // hacer la expansión hasta donde se pueda
+        if (expansion){
           while (((Ri + L[Ri]) < N) && ((Ri - L[Ri]) > 0) && T[Ri+L[Ri]+1] == T[Ri-L[Ri]-1]){
               L[Ri]++;
           }
         }
 
         if (Ri + L[Ri] > (C + L[C])){
+
             // si el nuevo palíndromo se expande más allá de C
             C = Ri;
         }
@@ -242,9 +277,11 @@ pair<int,int> manacher(string S){
         }
     }
     // obtener inicio y longitud del máximo palíndromo encontrado
-    // recordando que la longitud de T es el doble de la de S
-    res.first = (maxCentro - maxLong)/2; // inicio en S
-    res.second = res.first + maxLong - 1 ; // fin de S
+
+    // inicio en S
+    res.first = (maxCentro - maxLong)/2;
+    // fin de S
+    res.second = res.first + maxLong - 1 ;
     return res;
 }
 
