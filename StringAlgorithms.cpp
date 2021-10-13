@@ -38,7 +38,7 @@ string readWholeFile(string fileName) {
  La funcion preKMPAlgorithm se encarga del preprocesamiento del patron para poder generar un arreglo de valores,
  que nos ayudara a poder realizar la busqueda del patron de manera mas sencilla dentro del string principal.
  Esta función recibe 2 parámetros de tipo (string y entero ).
- El string es el patron que ingreso el usuario.
+ El string es el patron que es el contenido de los archivos de codigo malicioso.
  El entero es la longitud de dicho patron.
  Complejidad O(m) donde m es la longitud del patron.
 */
@@ -49,14 +49,13 @@ vector<int> preKMPAlgorithm(string pattern, int lenPattern) {
     El vector es de longitud igual a la longitud del patron.
     La posicion cero del vector siempre es cero.
     */
-    vector<int>kmpArray(25);
+    vector<int>kmpArray(lenPattern);
     kmpArray[0] = 0;
     int i = 1;
     int j = 0;
 
     //El ciclo calcula los valores del desde i=1 hasta lenPattern -1
     while (i < lenPattern) {
-
         if (pattern[i] == pattern[j]) { //Los caracteres son iguales.
             j++;
             kmpArray[i] = j;
@@ -131,7 +130,10 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
 
  La complejidad de este algoritmo es de O(n*m), siendo n la "cadena principal" y m la secuencia.
 */
-void longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
+pair<int,int> longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
+    
+    pair<int,int> result;
+    
     // Se crea la matriz de valores que permitirá guardar los valores del Longest Substring.
     vector < vector <int> > table(lenTransmission1+1);
     vector <int> cols(lenTransmission2+1);
@@ -163,9 +165,10 @@ void longestCommonSubstring(string transmissionFile1, string transmissionFile2, 
         }
     }
 
-    // Se imprime la posicion donde inicia el Longest Common Substring asi como donde finaliza.
-    cout << endIndex -lenLongestSubstring << ' ';
-    cout << endIndex -1 << "\n";
+    result.first = endIndex -lenLongestSubstring + 1;
+    result.second = endIndex;
+
+    return result;
 }
 
 /*
@@ -292,16 +295,22 @@ para el funcionamiento y control del programa.
 int main() {
     /*
     Se establecen 2 booleanos cuyo proposito es de variable de control del
-    flujo del programa para las condiciones que se encuentran dentro del ciclo
+    flujo del programa para las condiciones que se encuentran dentro del ciclo.
     */
     bool foundPattern = false;
     bool fileFinish = true;
     /*
     Se establecen elementos de tipo pair para procesar y almacenar las posiciones iniciales y finales
-    respecto al punto de los palindromos
+    respecto al punto de los palindromos.
     */
     pair <int, int> palindrome1;
     pair <int, int> palindrome2;
+
+    /*
+    Se establecen elementos de tipo pair para procesar y almacenar las posiciones iniciales y finales
+    respecto al Longest Common Substring.
+    */
+    pair <int, int> positionsLCS;
 
     /*
     Se indican las variables donde se almacena y ordena el contenido de los archivos
@@ -319,21 +328,23 @@ int main() {
     tFile1Content = tFileContent;
     tFile2Content = readWholeFile("transmission2.txt");
 
-    fileContent[0] = readWholeFile("mcodeFile1.txt");
-    fileContent[1] = readWholeFile("mcodeFile2.txt");
-    fileContent[2] = readWholeFile("mcodeFile3.txt");
+    fileContent[0] = readWholeFile("mcode1.txt");
+    fileContent[1] = readWholeFile("mcode2.txt");
+    fileContent[2] = readWholeFile("mcode3.txt");
 
     /*
     Esta seccion es el proceso de ejecucion del programa, en esta primera parte se hace un ciclo
     que itera un numero de veces proporcional al vector fileContent, cada iteracion ejecuta prepKMPAlgorithm
     y kmpSearching para la resolucion de la primera parte de la actividad
     */
+    cout<<"Parte 1" << "\n";
     for (int i = 0; i < 3; i++) {
         kmpArray = preKMPAlgorithm(fileContent[i], fileContent[i].size());
         positions = kmpSearching(tFileContent, fileContent[i], kmpArray, foundPattern);
+        int vectorLength = positions.size();
         if (foundPattern) {
             cout << "true" << " ";
-            for (unsigned int i = 0; i < positions.size(); i++) {
+            for (int i = 0; i < vectorLength; i++) {
                 cout << positions[i] << " ";
             }
             cout << "\n";
@@ -356,15 +367,22 @@ int main() {
     palindrome1 = manacher(tFile1Content);
     palindrome2 = manacher(tFile2Content);
     
-    cout << palindrome1.first << ' ' << palindrome1.second<< "\n";
+    cout<<"\n"<<"Parte 2" << "\n";
 
-    cout << palindrome2.first << ' ' << palindrome2.second << "\n";
+    cout << palindrome1.first + 1 << ' ' << palindrome1.second<< "\n";
+
+    cout << palindrome2.first + 1 << ' ' << palindrome2.second << "\n";
 
     /*
     Este segmento corresponde a la parte 3 de la actividad, donde se obtiene la posición inicial
     y final del substring común más largo en la transmisión de archivos, se requiere de los contenidos
     del archivo, así como su respectivo tamaño
     */
-    longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
+    positionsLCS = longestCommonSubstring(tFile1Content, tFile2Content, tFile1Content.size(), tFile2Content.size());
+
+    // Se imprime la posicion donde inicia el Longest Common Substring asi como donde finaliza.
+    cout<<"\n"<<"Parte 3" << "\n";
+    cout << positionsLCS.first << ' ' << positionsLCS.second << "\n";
+
     return 0;
 }
