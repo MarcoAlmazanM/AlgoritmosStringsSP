@@ -1,0 +1,6 @@
+Los integrantes del equipo son:
+Ángel Nolasco Serrano A01365726
+José Luis Hernandez Hurtado A01365190
+Marco Antonio Almazán Martínez A01769046
+
+Cada uno de los algoritmos empleados para esta actividad fueron desarrollados o adaptados por todo el equipo, en conjunto decidimos que algoritmos debíamos utilizar (KMP, Manacher y Longest Common Substring).
