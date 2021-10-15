@@ -1,3 +1,17 @@
+/*
+Angel Nolasco Serrano A01365726
+Jose Luis Hernandez Hurtado A01365190
+Marco Antonio Almazan Martinez A01769046
+Este codigo fue creado el dia 8 de Octubre de 2021
+El codigo tiene como finalidad la creacion y prueba de 3 algoritmos de strings, los cuales son:
+KMP (el cual sirve para buscar un patron en un string).
+Manacher (el cual nos ayuda a encontrar el paindromo mas grande contenido en un string).
+Longest Common Substring(el cual sirve para encontrar el substring más largo entre dos strings).
+La complejidad de este codigo se resume a la suma de las complejidades de cada uno de los anteriores algoritmos,
+siendo el de mayor complejidad en el peor caso el del Longest Common Substring, es por esto que la complejidad de este codigo
+en el peor de los caso es de O(n*m), siendo n la longitud del primer string y m la longitud del segundo string.
+*/
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -128,7 +142,7 @@ vector<int> kmpSearching(string st, string pattern, vector<int> kmpArray, bool &
  El primer entero contiene la longitud del primer archivo de transmision.
  El segundo entero contiene la longitud del segundo archivo de transmision.
 
- La complejidad de este algoritmo es de O(n*m), siendo n la "cadena principal" y m la secuencia.
+ La complejidad de este algoritmo es de O(n*m), siendo n la longitud del primer string y m la longitud del segundo string.
 */
 pair<int,int> longestCommonSubstring(string transmissionFile1, string transmissionFile2, int lenTransmission1, int lenTransmission2) {
     
@@ -284,7 +298,7 @@ pair<int,int> manacher(string S){
     // inicio en S
     res.first = (maxCentro - maxLong)/2;
     // fin de S
-    res.second = res.first + maxLong - 1 ;
+    res.second = res.first + maxLong;
     return res;
 }
 
